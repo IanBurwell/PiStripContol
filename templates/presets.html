@@ -1,0 +1,13 @@
+{% extends 'layout.html' %}
+
+{% block body %}
+Currently: {{ selected }}
+
+{% from "_formhelpers.html" import render_field %}
+<form method=post>
+  <dl>
+    {{ render_field(form.presets) }}
+  </dl>
+  <p><input type=submit value=Select>
+</form>
+{% endblock %}
