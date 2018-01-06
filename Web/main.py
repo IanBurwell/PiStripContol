@@ -48,7 +48,11 @@ def picker():
             helpers.editDataItem('current', '2', tuple([round(255*val, 2) for val in form.colorPick.data.rgb]))
         if form.strip4.data:
             helpers.editDataItem('current', '3', tuple([round(255*val, 2) for val in form.colorPick.data.rgb]))
-    return render_template("picker.html", form=form)
+    colors = helpers.getDataDict("current")
+    return render_template("picker.html", c0=helpers.tupleToHex(colors['0']),
+                                            c1=helpers.tupleToHex(colors['1']),
+                                            c2=helpers.tupleToHex(colors['2']),
+                                            c3=helpers.tupleToHex(colors['3']), form=form)
 
 
 #PRESETS
@@ -68,8 +72,11 @@ def presetList():
         selected = 'Preset'
         for i in range(4):
             helpers.editDataItem('current', str(i), presetData[form.presets.data][i])
-
-    return render_template("presets.html", form=form)
+    colors = helpers.getDataDict("current")
+    return render_template("presets.html", c0=helpers.tupleToHex(colors['0']),
+                                            c1=helpers.tupleToHex(colors['1']),
+                                            c2=helpers.tupleToHex(colors['2']),
+                                            c3=helpers.tupleToHex(colors['3']), form=form)
 
 
 if __name__ == '__main__':
