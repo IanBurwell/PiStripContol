@@ -6,13 +6,14 @@ from wtforms import SubmitField, SelectField
 from wtforms_components import ColorField
 import helpers
 from flask_bootstrap import Bootstrap
+from led_control import StripControl
 
 app = Flask(__name__) # create the application instance :)
 app.config['SECRET_KEY'] = 'secret key'
 Bootstrap(app)
 nav = Nav()
 nav.init_app(app)
-
+strips = StripControl()
 
 @app.route('/')
 def index():
@@ -40,14 +41,20 @@ class PickerForm(FlaskForm):
 def picker():
     form = PickerForm(request.form)
     if request.method == 'POST' and form.validate():
+        color = tuple([round(255*val, 2) for val in form.colorPick.data.rgb])
         if form.strip1.data:
-            helpers.editDataItem('current', '0', tuple([round(255*val, 2) for val in form.colorPick.data.rgb]))
+            helpers.editDataItem('current', '0', color)
+            strips.setStripColor(0, color)
+            print(color)
         if form.strip2.data:
-            helpers.editDataItem('current', '1', tuple([round(255*val, 2) for val in form.colorPick.data.rgb]))
+            helpers.editDataItem('current', '1', color)
+            strips.setStripColor(1, color)
         if form.strip3.data:
-            helpers.editDataItem('current', '2', tuple([round(255*val, 2) for val in form.colorPick.data.rgb]))
+            helpers.editDataItem('current', '2', color)
+            strips.setStripColor(2, color)
         if form.strip4.data:
-            helpers.editDataItem('current', '3', tuple([round(255*val, 2) for val in form.colorPick.data.rgb]))
+            helpers.editDataItem('current', '3', color)
+            strips.setStripColor(3, color)
     colors = helpers.getDataDict("current")
     return render_template("picker.html", c0=helpers.tupleToHex(colors['0']),
                                             c1=helpers.tupleToHex(colors['1']),
@@ -80,4 +87,7 @@ def presetList():
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    try:
+        app.run(host='0.0.0.0', debug=True)
+    except KeyboardInterrupt:
+        strips.stop()
