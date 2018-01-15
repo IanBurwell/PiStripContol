@@ -1,5 +1,7 @@
 import RPi.GPIO as GPIO
 import time
+import pigpio
+
 '''
 Pins:
 Strip1:4,17,27
@@ -11,23 +13,15 @@ Strip4:16,20,21
 class StripControl():
 
     def __init__(self):
-        self.frequency = 100
         self.brightness = 1
+        self.gpio = pigpio.pi()
 
-        GPIO.setmode(GPIO.BCM)
-        for pin in [4,17,27,22,18,23,5,6,13,16,20,21]:
-            GPIO.setup(pin, GPIO.OUT)
-        self.strips = [[GPIO.PWM(4, self.frequency),GPIO.PWM(17, self.frequency),GPIO.PWM(27, self.frequency)],
-                [GPIO.PWM(22, self.frequency),GPIO.PWM(18, self.frequency),GPIO.PWM(23, self.frequency)],
-                [GPIO.PWM(5, self.frequency),GPIO.PWM(6, self.frequency),GPIO.PWM(13, self.frequency)],
-                [GPIO.PWM(16, self.frequency),GPIO.PWM(20, self.frequency),GPIO.PWM(21, self.frequency)]]
+        #self.gpio.set_PWM_frequency()
+        # One of these:  8000  4000  2000 1600 1000  800  500  400  320
+        #    250   200   160  100   80   50   40   20   10
 
+        self.strips = [[4,17,27],[22,18,23],[5,6,13],[16,20,21]]
         self.strip_colors = [[100,100,100],[100,100,100],[100,100,100],[100,100,100]]
-
-        for strip in self.strips:
-            for color in strip:
-                color.start(100)
-                #pwm.ChangeDutyCycle(75)
 
     def setState(self, bright=None):
         if bright is not None:
@@ -41,13 +35,11 @@ class StripControl():
     def update(self):
         print(self.strip_colors)
         for sidx, strip in enumerate(self.strips):
-            for ledidx, led in enumerate(strip):
-                led.ChangeDutyCycle(int(self.strip_colors[sidx][ledidx]*self.brightness))
+            for ledidx, ledPin in enumerate(strip):
+                gpio.set_PWM_dutycycle(ledPin, int(self.strip_colors[sidx][ledidx]*self.brightness))
 
     def stop(self):
-        for strip in self.strips:
-            for pwm in strip:
-                pwm.stop()
+        self.gpio.stop()
 
 
 if __name__ == "__main__":
