@@ -30,7 +30,11 @@ class SequenceThread(threading.Thread):
                 if self.paused:
                     self.state.wait()
             #DO STUFF
-            if i > 7:
+            if self.sequence is None:
+                self.pause()
+                time.sleep(0.001)
+                continue
+            if i > 6:
                 i = 0
             else:
                 i += 1
@@ -39,7 +43,7 @@ class SequenceThread(threading.Thread):
                 self.sequence['0'][i],
                 self.sequence['0'][i]]
 
-            sc.update(colors)
+            self.sc.update(colors)
             time.sleep(self.sequence['onTime'])
             #CODE TO FADE
 
@@ -75,7 +79,8 @@ class StripControl():
 
 
     def setState(self, bright=None, sequence=None):
-        if sequence is not None and not isinstance(sequence, dict)
+        if sequence is not None and not isinstance(sequence, dict):
+            raise Exeption("sequence isnt a dictionary")
         if bright is not None:
             self.brightness = double(bright if 1>= bright >=0 else 0.75)
         if sequence is not None:
@@ -103,27 +108,16 @@ class StripControl():
 
 
     def stop(self):
-<<<<<<< HEAD
         for i in range(4):
             self.setStripColor(i, (0,0,0))
-=======
         self.setState(sequence=None)
->>>>>>> 791e389477f9f31d35001bee7bb9769c52e63ba1
         self.gpio.stop()
         self.sequence.stop()
 
 
 
 if __name__ == "__main__":
-<<<<<<< HEAD
-        strip = StripControl()
-        time.sleep(2)
-        strip.setStripColor(0, (255,100,0))
-        time.sleep(10)
-        strip.stop()
-=======
     strip = StripControl()
     time.sleep(2)
 
     strip.stop()
->>>>>>> 791e389477f9f31d35001bee7bb9769c52e63ba1

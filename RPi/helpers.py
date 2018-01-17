@@ -2,7 +2,7 @@ from ast import literal_eval
 import csv
 
 def getDataDict(filename):
-    with open('RPi/Data/'+filename+'.csv', 'r') as csv_file:
+    with open('Data/'+filename+'.csv', 'r') as csv_file:
         reader = csv.DictReader(csv_file)
         for row in reader:
             if row is not None:
@@ -19,7 +19,7 @@ def addDataItem(filename, key, value):
     d = getDataDict(filename)
     if key in d:
         return False
-    with open('RPi/Data/'+filename+'.csv', 'w') as csv_file:
+    with open('Data/'+filename+'.csv', 'w') as csv_file:
         d[key] = value
         fieldnames.append(key)
         writer = csv.DictWriter(csv_file, fieldnames=fieldnames)
@@ -33,7 +33,7 @@ def editDataItem(filename, key, value):
     if key not in d:
         return False
     d[key] = value
-    with open('RPi/Data/'+filename+'.csv', 'w') as csv_file:
+    with open('Data/'+filename+'.csv', 'w') as csv_file:
         fieldnames = list(d.keys())
         writer = csv.DictWriter(csv_file, fieldnames=fieldnames)
         writer.writeheader()
@@ -45,7 +45,7 @@ def deleteDataItem(filename, key):
     if key not in d:
         return False
     del d[key]
-    with open('RPi/Data/'+filename+'.csv', 'w') as csv_file:
+    with open('Data/'+filename+'.csv', 'w') as csv_file:
         fieldnames = list(d.keys())
         writer = csv.DictWriter(csv_file, fieldnames=fieldnames)
         writer.writeheader()

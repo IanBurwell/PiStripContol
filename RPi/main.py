@@ -7,14 +7,14 @@ from wtforms.validators import NumberRange
 from wtforms_components import ColorField
 import helpers
 from flask_bootstrap import Bootstrap
-#from led_control import StripControl
+from led_control import StripControl
 
 app = Flask(__name__) # create the application instance :)
 app.config['SECRET_KEY'] = 'secret key'
 Bootstrap(app)
 nav = Nav()
 nav.init_app(app)
-#strips = StripControl()
+strips = StripControl()
 
 @app.route('/')
 def index():
@@ -45,17 +45,17 @@ def picker():
         color = tuple([round(255*val, 2) for val in form.colorPick.data.rgb])
         if form.strip1.data:
             helpers.editDataItem('current', '0', color)
-            #strips.setStripColor(0, color)
+            strips.setStripColor(0, color)
             print(color)
         if form.strip2.data:
             helpers.editDataItem('current', '1', color)
-            #strips.setStripColor(1, color)
+            strips.setStripColor(1, color)
         if form.strip3.data:
             helpers.editDataItem('current', '2', color)
-            #strips.setStripColor(2, color)
+            strips.setStripColor(2, color)
         if form.strip4.data:
             helpers.editDataItem('current', '3', color)
-            #strips.setStripColor(3, color)
+            strips.setStripColor(3, color)
     colors = helpers.getDataDict("current")
     return render_template("picker.html", c0=helpers.tupleToHex(colors['0']),
                                             c1=helpers.tupleToHex(colors['1']),
@@ -79,7 +79,7 @@ def presetList():
     if request.method == 'POST' and form.validate():
         selected = 'Preset'
         for i in range(4):
-            #strips.setStripColor(i, presetData[form.presets.data][i])
+            strips.setStripColor(i, presetData[form.presets.data][i])
             helpers.editDataItem('current', str(i), presetData[form.presets.data][i])
     colors = helpers.getDataDict("current")
     return render_template("presets.html", c0=helpers.tupleToHex(colors['0']),
@@ -145,12 +145,16 @@ def sequencer():
             helpers.editDataItem('sequences', 'temp', tempSequence)
         if form.c0.data:
             helpers.editDataItem('sequences', '0', tempSequence)
+            strips.setState(sequence=helpers.getDataDict('sequences'))
         if form.c1.data:
             helpers.editDataItem('sequences', '1', tempSequence)
+            strips.setState(sequence=helpers.getDataDict('sequences'))
         if form.c2.data:
             helpers.editDataItem('sequences', '2', tempSequence)
+            strips.setState(sequence=helpers.getDataDict('sequences'))
         if form.c3.data:
             helpers.editDataItem('sequences', '3', tempSequence)
+            strips.setState(sequence=helpers.getDataDict('sequences'))
         helpers.editDataItem('sequences', 'onTime', form.onTime.data)
         helpers.editDataItem('sequences', 'fadeTime', form.fadeTime.data)
 
