@@ -2,25 +2,39 @@
 
 
 {% block content %}
-<form class="form form-horizontal" method="post" role="form">
+<form class="form form-vertical" method="post" role="form">
   {{ form.hidden_tag() }}
   {{ wtf.form_errors(form, hiddens="only") }}
-  {{ wtf.form_field(form.colorPick) }}
+  <div class="container">
+    <div class="row">
+        {{ wtf.form_field(form.colorPick) }}
+    </div>
+    <br><br>
+    <div class="row">
+      {{ form.s0(style='background-color: #' + s0, class='btn btn-default') }}
+      {{ form.s1(style='background-color: #' + s1, class='btn btn-default') }}
+      {{ form.s2(style='background-color: #' + s2, class='btn btn-default') }}
+      {{ form.s3(style='background-color: #' + s3, class='btn btn-default') }}
+      {{ form.s4(style='background-color: #' + s4, class='btn btn-default') }}
+      {{ form.s5(style='background-color: #' + s5, class='btn btn-default') }}
+      {{ form.s6(style='background-color: #' + s6, class='btn btn-default') }}
+      {{ form.s7(style='background-color: #' + s7, class='btn btn-default') }}
+    </div>
+    <br><br>
+    <div class="row">
+      {{ wtf.form_field(form.onTime)}}
+    </div>
+    <div class="row">
+      {{ wtf.form_field(form.fadeTime)}}
+    </div>
+    <br>
+    <div class="row">
+      {{ form.c0(style='background-color: #' + c0, class='btn btn-default') }}
+      {{ form.c1(style='background-color: #' + c1, class='btn btn-default') }}
+      {{ form.c2(style='background-color: #' + c2, class='btn btn-default') }}
+      {{ form.c3(style='background-color: #' + c3, class='btn btn-default') }}
+    </div>
+  </div>
 
-  {{ form.s1(style='background-color: #' + s0, class='btn btn-default') }}
-  {{ form.s1(style='background-color: #' + s1, class='btn btn-default') }}
-  {{ form.s1(style='background-color: #' + s2, class='btn btn-default') }}
-  {{ form.s1(style='background-color: #' + s3, class='btn btn-default') }}
-  {{ form.s1(style='background-color: #' + s4, class='btn btn-default') }}
-  {{ form.s1(style='background-color: #' + s5, class='btn btn-default') }}
-  {{ form.s1(style='background-color: #' + s6, class='btn btn-default') }}
-  {{ form.s1(style='background-color: #' + s7, class='btn btn-default') }}
-
-  <br><br>
-
-  {{ form.c0(style='background-color: #' + c0, class='btn btn-default') }}
-  {{ form.c1(style='background-color: #' + c1, class='btn btn-default') }}
-  {{ form.c2(style='background-color: #' + c2, class='btn btn-default') }}
-  {{ form.c3(style='background-color: #' + c3, class='btn btn-default') }}
 </form>
 {% endblock %}

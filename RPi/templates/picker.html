@@ -2,15 +2,21 @@
 
 {% block content %}
 
-<form class="form form-horizontal" method="post" role="form">
-{{ form.hidden_tag() }}
-{{ wtf.form_errors(form, hiddens="only") }}
-{{ wtf.form_field(form.colorPick) }}
-
-{{ form.strip1(style='background-color: #' + c0, class='btn btn-default') }}
-{{ form.strip2(style='background-color: #' + c1, class='btn btn-default') }}
-{{ form.strip3(style='background-color: #' + c2, class='btn btn-default') }}
-{{ form.strip4(style='background-color: #' + c3, class='btn btn-default') }}
+<form class="form form-vertical" method="post" role="form">
+  <div class="container">
+    {{ form.hidden_tag() }}
+    {{ wtf.form_errors(form, hiddens="only") }}
+    <div class="row">
+      {{ wtf.form_field(form.colorPick) }}
+    </div>
+    <br><br>
+    <div class="row">
+      {{ form.strip1(style='background-color: #' + c0, class='btn btn-default') }}
+      {{ form.strip2(style='background-color: #' + c1, class='btn btn-default') }}
+      {{ form.strip3(style='background-color: #' + c2, class='btn btn-default') }}
+      {{ form.strip4(style='background-color: #' + c3, class='btn btn-default') }}
+    </div>
+  </div>
 </form>
 
 {% endblock %}

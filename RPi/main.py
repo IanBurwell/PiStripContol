@@ -2,12 +2,12 @@ from flask import *
 from flask_wtf import FlaskForm
 from flask_nav import Nav
 from flask_nav.elements import Navbar, View
-from wtforms import SubmitField, SelectField
+from wtforms import SubmitField, SelectField, DecimalField
+from wtforms.validators import NumberRange
 from wtforms_components import ColorField
 import helpers
 from flask_bootstrap import Bootstrap
 #from led_control import StripControl
-from ast import literal_eval
 
 app = Flask(__name__) # create the application instance :)
 app.config['SECRET_KEY'] = 'secret key'
@@ -100,16 +100,23 @@ class SequencerForm(FlaskForm):
     s7 = SubmitField(label='7')
     s0 = SubmitField(label='0')
 
-    c1 = SubmitField(label='1')
-    c2 = SubmitField(label='2')
-    c3 = SubmitField(label='3')
-    c4 = SubmitField(label='4')
+    c0 = SubmitField(label='1')
+    c1 = SubmitField(label='2')
+    c2 = SubmitField(label='3')
+    c3 = SubmitField(label='4')
+
+    onTime = DecimalField("On Time", places=2, validators=[NumberRange(min=0.00999999999, max=30, message="Must be 0.01-30")])
+    fadeTime = DecimalField("Fade Time", places=2, validators=[NumberRange(min=0.00999999999, max=30, message="Must be 0.01-30")])
+
 
 @app.route('/sequencer', methods = ['GET','POST'])
 def sequencer():
-    form = PickerForm(request.form)
+    form = SequencerForm(request.form)
     colors = helpers.getDataDict("current")
-    tempSequence = literal_eval(helpers.getDataDict("sequences")['temp'])
+    tempSequence = helpers.getDataDict("sequences")['temp']
+    if request.method == 'GET':
+        form.onTime.data = helpers.getDataDict("sequences")['onTime']
+        form.fadeTime.data = helpers.getDataDict("sequences")['fadeTime']
     if request.method == 'POST' and form.validate():
         color = tuple([round(255*val, 2) for val in form.colorPick.data.rgb])
         if form.s0.data:
@@ -144,6 +151,8 @@ def sequencer():
             helpers.editDataItem('sequences', '2', tempSequence)
         if form.c3.data:
             helpers.editDataItem('sequences', '3', tempSequence)
+        helpers.editDataItem('sequences', 'onTime', form.onTime.data)
+        helpers.editDataItem('sequences', 'fadeTime', form.fadeTime.data)
 
     return render_template("sequencer.html", form=form,
                                             s0=helpers.tupleToHex(tempSequence[0]),
