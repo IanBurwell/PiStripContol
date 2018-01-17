@@ -2,7 +2,7 @@ from ast import literal_eval
 import csv
 
 def getDataDict(filename):
-    with open('Data/'+filename+'.csv', 'r') as csv_file:
+    with open('RPi/Data/'+filename+'.csv', 'r') as csv_file:
         reader = csv.DictReader(csv_file)
         for row in reader:
             if row is not None:
@@ -10,16 +10,16 @@ def getDataDict(filename):
                     try:
                         row[key] = literal_eval(colStr)
                     except:
-                        pass
+                        raise Exception("Data Formated badly:", colStr, "in \""+ str(dict(row)) +"\"")
                 return dict(row)
         return {}
 
 def addDataItem(filename, key, value):
     fieldnames = list(getDataDict(filename).keys())
-    d = getDataDictDict(filename)
+    d = getDataDict(filename)
     if key in d:
         return False
-    with open('Data/'+filename+'.csv', 'w') as csv_file:
+    with open('RPi/Data/'+filename+'.csv', 'w') as csv_file:
         d[key] = value
         fieldnames.append(key)
         writer = csv.DictWriter(csv_file, fieldnames=fieldnames)
@@ -33,7 +33,7 @@ def editDataItem(filename, key, value):
     if key not in d:
         return False
     d[key] = value
-    with open('Data/'+filename+'.csv', 'w') as csv_file:
+    with open('RPi/Data/'+filename+'.csv', 'w') as csv_file:
         fieldnames = list(d.keys())
         writer = csv.DictWriter(csv_file, fieldnames=fieldnames)
         writer.writeheader()
@@ -45,7 +45,7 @@ def deleteDataItem(filename, key):
     if key not in d:
         return False
     del d[key]
-    with open('Data/'+filename+'.csv', 'w') as csv_file:
+    with open('RPi/Data/'+filename+'.csv', 'w') as csv_file:
         fieldnames = list(d.keys())
         writer = csv.DictWriter(csv_file, fieldnames=fieldnames)
         writer.writeheader()
@@ -53,10 +53,13 @@ def deleteDataItem(filename, key):
     return True
 
 def tupleToHex(color):
-    if not isinstance(color, tuple):
-        return "000000"
+    if not isinstance(color, tuple) and len(color) != 3:
+        raise AssertionError(color + "is not a tuple of length 3")
     colHex = ""
     for val in color:
         mod = str(hex(int(val)))[2:]
         colHex += mod if len(mod) > 1 else '0'+mod
     return colHex
+
+if __name__ == "__main__":
+    addDataItem('sequences', 'FadeTime', 1)
