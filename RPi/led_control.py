@@ -1,7 +1,7 @@
 import time
 import pigpio
 import threading
-
+import helpers
 
 '''
 Pins:
@@ -23,7 +23,7 @@ class SequenceThread(threading.Thread):
 
 
     def run(self):
-        self.resume()
+        self.pause()
         i = 0
         while not self.stop_event.is_set():
             with self.state:
@@ -32,20 +32,39 @@ class SequenceThread(threading.Thread):
             #DO STUFF
             if self.sequence is None:
                 self.pause()
-                time.sleep(0.001)
+                time.sleep(0.01)
                 continue
             if i > 6:
                 i = 0
             else:
                 i += 1
             colors = [self.sequence['0'][i],
-                self.sequence['0'][i],
-                self.sequence['0'][i],
-                self.sequence['0'][i]]
-
+                self.sequence['1'][i],
+                self.sequence['2'][i],
+                self.sequence['3'][i]]
             self.sc.update(colors)
             time.sleep(self.sequence['onTime'])
+
             #CODE TO FADE
+            j = i if i < 7 else 0
+            nextColors = [self.sequence['0'][i],
+                self.sequence['1'][i],
+                self.sequence['2'][i],
+                self.sequence['3'][i]]
+            differences = []
+            for idx in range(4):
+                differences.append(helpers.colorDifference(nextColors[idx]))
+
+            #find biggest difference, for loop that manny times adding r/largest diff etc to the color channels with time/diff in time.sleep
+            maxDist = max(differences)
+            for fDist in range(maxDist):
+                for idx in range(4):
+                    colors[idx] += differences[idx]/maxDist
+                if self.paused:
+                    break
+                self.sc.update(colors)
+                time.sleep(self.sequence['fadeTime']/maxDist)
+
 
     def resume(self, sequence=None):
         self.sequence = sequence
@@ -111,13 +130,14 @@ class StripControl():
         for i in range(4):
             self.setStripColor(i, (0,0,0))
         self.setState(sequence=None)
-        self.gpio.stop()
         self.sequence.stop()
+        self.gpio.stop()
+
 
 
 
 if __name__ == "__main__":
     strip = StripControl()
     time.sleep(2)
-
+    strip.setStripColor(0, (0,0,0))
     strip.stop()

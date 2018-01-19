@@ -61,5 +61,9 @@ def tupleToHex(color):
         colHex += mod if len(mod) > 1 else '0'+mod
     return colHex
 
+
+def colorDifference(colA, colB):
+    return (colA[0]-colB[0],colA[1]-colB[1],colA[2]-colB[2])
+
 if __name__ == "__main__":
     addDataItem('sequences', 'FadeTime', 1)

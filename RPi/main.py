@@ -106,7 +106,7 @@ class SequencerForm(FlaskForm):
     c3 = SubmitField(label='4')
 
     onTime = DecimalField("On Time", places=2, validators=[NumberRange(min=0.00999999999, max=30, message="Must be 0.01-30")])
-    fadeTime = DecimalField("Fade Time", places=2, validators=[NumberRange(min=0.00999999999, max=30, message="Must be 0.01-30")])
+    fadeTime = DecimalField("Fade Time", places=2, validators=[NumberRange(min=0, max=30, message="Must be 0.01-30")])
 
 
 @app.route('/sequencer', methods = ['GET','POST'])
