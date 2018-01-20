@@ -38,28 +38,30 @@ class SequenceThread(threading.Thread):
                 i = 0
             else:
                 i += 1
-            colors = [self.sequence['0'][i],
-                self.sequence['1'][i],
-                self.sequence['2'][i],
-                self.sequence['3'][i]]
+            colors = [list(self.sequence['0'][i]),
+                list(self.sequence['1'][i]),
+                list(self.sequence['2'][i]),
+                list(self.sequence['3'][i])]
             self.sc.update(colors)
             time.sleep(self.sequence['onTime'])
 
             #CODE TO FADE
-            j = i if i < 7 else 0
-            nextColors = [self.sequence['0'][i],
-                self.sequence['1'][i],
-                self.sequence['2'][i],
-                self.sequence['3'][i]]
+            j = i+1 if i < 7 else 0
+            nextColors = [list(self.sequence['0'][j]),
+                list(self.sequence['1'][j]),
+                list(self.sequence['2'][j]),
+                list(self.sequence['3'][j])]
             differences = []
             for idx in range(4):
-                differences.append(helpers.colorDifference(nextColors[idx]))
+                differences.append(helpers.colorDifference(nextColors[idx], colors[idx]))
 
             #find biggest difference, for loop that manny times adding r/largest diff etc to the color channels with time/diff in time.sleep
-            maxDist = max(differences)
-            for fDist in range(maxDist):
+            maxDist = abs(max([max(differences[midx], key=abs) for midx in range(4)], key=abs))
+            print(differences[0])
+            for fDist in range(int(maxDist)):
                 for idx in range(4):
-                    colors[idx] += differences[idx]/maxDist
+                    for col in range(3):
+                        colors[idx][col] += differences[idx][col]/maxDist
                 if self.paused:
                     break
                 self.sc.update(colors)
