@@ -113,7 +113,7 @@ class StripControl():
     def setStripColor(self, index, color):
         self.setState(sequence=None)
         r,g,b = color
-        self.strip_colors[index] = [int(r/2.55),int(g/2.55),int(b/2.55)]
+        self.strip_colors[index] = [int(r),int(g),int(b)]
         self.update()
 
 
@@ -121,7 +121,7 @@ class StripControl():
         if colors is not None:
             for index, color in enumerate(colors):
                 r,g,b = color
-                self.strip_colors[index] = [int(r/2.55),int(g/2.55),int(b/2.55)]
+                self.strip_colors[index] = [int(r),int(g),int(b)]
         #print(self.strip_colors)
         for sidx, strip in enumerate(self.strips):
             for ledidx, ledPin in enumerate(strip):
